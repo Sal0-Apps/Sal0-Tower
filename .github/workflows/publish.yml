@@ -32,14 +32,6 @@ jobs:
             .ci-venv/bin/python -m playwright install --with-deps chromium
           fi
           timeout 180 .ci-venv/bin/python -u tests/browser_smoke.py
-      - name: Save interface previews
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: interface-preview
-          path: qa/*.png
-          if-no-files-found: ignore
-          retention-days: 7
       - name: Build panel for Docker integration
         run: docker build -t sal0-tower:ci .
       - name: Test with independent Docker engine
