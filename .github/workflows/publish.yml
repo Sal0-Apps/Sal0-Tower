@@ -8,24 +8,28 @@ permissions:
   contents: read
 concurrency:
   group: sal0-tower-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Unit and HTTP integration tests
         run: python3 -m unittest discover -s tests -v
-      - name: JavaScript and installer syntax
+      - name: JavaScript and compose syntax
         run: |
           node --check panel/static/app.js
           docker compose config -q
       - name: Browser workflow and mobile layout
+        timeout-minutes: 8
         run: |
           python3 -m venv .ci-venv
           .ci-venv/bin/pip install playwright
-          .ci-venv/bin/python -m playwright install --with-deps chromium
-          .ci-venv/bin/python tests/browser_smoke.py
+          if ! command -v google-chrome; then
+            .ci-venv/bin/python -m playwright install --with-deps chromium
+          fi
+          timeout 180 .ci-venv/bin/python -u tests/browser_smoke.py
       - name: Build panel for Docker integration
         run: docker build -t sal0-tower:ci .
       - name: Test with independent Docker engine

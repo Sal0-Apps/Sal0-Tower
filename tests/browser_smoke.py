@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import shutil
 import sys
 import tempfile
 import threading
@@ -14,7 +15,7 @@ app=server.make_server("127.0.0.1",0,temp.name,docker,lambda info,images:None)
 thread=threading.Thread(target=app.serve_forever,daemon=True);thread.start();errors=[]
 try:
  with patch("watchtower.time.sleep",return_value=None),sync_playwright() as p:
-  browser=p.chromium.launch(headless=True,args=["--no-sandbox"])
+  browser=p.chromium.launch(headless=True,executable_path=shutil.which("google-chrome"),args=["--no-sandbox"])
   page=browser.new_page(viewport={"width":1280,"height":1000});page.on("pageerror",lambda e:errors.append(str(e)))
   page.goto(f"http://127.0.0.1:{app.server_port}")
   expect(page.locator("#connection")).to_have_text("Conectado")
