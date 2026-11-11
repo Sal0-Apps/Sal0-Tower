@@ -1,0 +1,8 @@
+.git
+.github
+assets
+tests
+.ci-venv
+**/__pycache__
+.env
+data

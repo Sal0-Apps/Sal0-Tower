@@ -1,0 +1,317 @@
+{
+  "host": {
+    "type": "value",
+    "alias": "H",
+    "env": "DOCKER_HOST"
+  },
+  "tlsverify": {
+    "type": "bool",
+    "alias": "v",
+    "env": "DOCKER_TLS_VERIFY"
+  },
+  "api-version": {
+    "type": "value",
+    "alias": "a",
+    "env": "DOCKER_API_VERSION"
+  },
+  "interval": {
+    "type": "value",
+    "alias": "i",
+    "env": "WATCHTOWER_POLL_INTERVAL"
+  },
+  "schedule": {
+    "type": "value",
+    "alias": "s",
+    "env": "WATCHTOWER_SCHEDULE"
+  },
+  "stop-timeout": {
+    "type": "value",
+    "alias": "t",
+    "env": "WATCHTOWER_TIMEOUT"
+  },
+  "no-pull": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_NO_PULL"
+  },
+  "no-restart": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_NO_RESTART"
+  },
+  "no-startup-message": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_NO_STARTUP_MESSAGE"
+  },
+  "cleanup": {
+    "type": "bool",
+    "alias": "c",
+    "env": "WATCHTOWER_CLEANUP"
+  },
+  "remove-volumes": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_REMOVE_VOLUMES"
+  },
+  "label-enable": {
+    "type": "bool",
+    "alias": "e",
+    "env": "WATCHTOWER_LABEL_ENABLE"
+  },
+  "disable-containers": {
+    "type": "value",
+    "alias": "x",
+    "env": "WATCHTOWER_DISABLE_CONTAINERS"
+  },
+  "log-format": {
+    "type": "value",
+    "alias": "l",
+    "env": "WATCHTOWER_LOG_FORMAT"
+  },
+  "debug": {
+    "type": "bool",
+    "alias": "d",
+    "env": "WATCHTOWER_DEBUG"
+  },
+  "trace": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_TRACE"
+  },
+  "monitor-only": {
+    "type": "bool",
+    "alias": "m",
+    "env": "WATCHTOWER_MONITOR_ONLY"
+  },
+  "run-once": {
+    "type": "bool",
+    "alias": "R",
+    "env": "WATCHTOWER_RUN_ONCE"
+  },
+  "include-restarting": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_INCLUDE_RESTARTING"
+  },
+  "include-stopped": {
+    "type": "bool",
+    "alias": "S",
+    "env": "WATCHTOWER_INCLUDE_STOPPED"
+  },
+  "revive-stopped": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_REVIVE_STOPPED"
+  },
+  "enable-lifecycle-hooks": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_LIFECYCLE_HOOKS"
+  },
+  "rolling-restart": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_ROLLING_RESTART"
+  },
+  "http-api-update": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_HTTP_API_UPDATE"
+  },
+  "http-api-metrics": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_HTTP_API_METRICS"
+  },
+  "http-api-token": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_HTTP_API_TOKEN"
+  },
+  "http-api-periodic-polls": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_HTTP_API_PERIODIC_POLLS"
+  },
+  "no-color": {
+    "type": "bool",
+    "alias": "",
+    "env": "NO_COLOR"
+  },
+  "scope": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_SCOPE"
+  },
+  "porcelain": {
+    "type": "value",
+    "alias": "P",
+    "env": "WATCHTOWER_PORCELAIN"
+  },
+  "log-level": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_LOG_LEVEL"
+  },
+  "health-check": {
+    "type": "bool",
+    "alias": "",
+    "env": ""
+  },
+  "label-take-precedence": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_LABEL_TAKE_PRECEDENCE"
+  },
+  "notifications": {
+    "type": "value",
+    "alias": "n",
+    "env": "WATCHTOWER_NOTIFICATIONS"
+  },
+  "notifications-level": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATIONS_LEVEL"
+  },
+  "notifications-delay": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATIONS_DELAY"
+  },
+  "notifications-hostname": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATIONS_HOSTNAME"
+  },
+  "notification-email-from": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_EMAIL_FROM"
+  },
+  "notification-email-to": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_EMAIL_TO"
+  },
+  "notification-email-delay": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_EMAIL_DELAY"
+  },
+  "notification-email-server": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_EMAIL_SERVER"
+  },
+  "notification-email-server-port": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT"
+  },
+  "notification-email-server-tls-skip-verify": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_EMAIL_SERVER_TLS_SKIP_VERIFY"
+  },
+  "notification-email-server-user": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER"
+  },
+  "notification-email-server-password": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD"
+  },
+  "notification-email-subjecttag": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG"
+  },
+  "notification-slack-hook-url": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL"
+  },
+  "notification-slack-identifier": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER"
+  },
+  "notification-slack-channel": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_SLACK_CHANNEL"
+  },
+  "notification-slack-icon-emoji": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_SLACK_ICON_EMOJI"
+  },
+  "notification-slack-icon-url": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_SLACK_ICON_URL"
+  },
+  "notification-msteams-hook": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_MSTEAMS_HOOK_URL"
+  },
+  "notification-msteams-data": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_MSTEAMS_USE_LOG_DATA"
+  },
+  "notification-gotify-url": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_GOTIFY_URL"
+  },
+  "notification-gotify-token": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN"
+  },
+  "notification-gotify-tls-skip-verify": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_GOTIFY_TLS_SKIP_VERIFY"
+  },
+  "notification-template": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_TEMPLATE"
+  },
+  "notification-url": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_URL"
+  },
+  "notification-report": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_REPORT"
+  },
+  "notification-title-tag": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_TITLE_TAG"
+  },
+  "notification-skip-title": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_SKIP_TITLE"
+  },
+  "warn-on-head-failure": {
+    "type": "value",
+    "alias": "",
+    "env": "WATCHTOWER_WARN_ON_HEAD_FAILURE"
+  },
+  "notification-log-stdout": {
+    "type": "bool",
+    "alias": "",
+    "env": "WATCHTOWER_NOTIFICATION_LOG_STDOUT"
+  }
+}
