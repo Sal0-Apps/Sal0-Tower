@@ -67,6 +67,8 @@ Credenciais de Telegram e outros destinos permanecem na configuração existente
 
 ## Publicação e testes
 
+O fluxo `.github/workflows/release.yml` usa uma fila independente, tenta cancelar as execuções substituídas do fluxo antigo e impede publicar um commit que já foi ultrapassado na branch main. A validação final confere o download anônimo, o digest e a revisão da imagem.
+
 GitHub Actions executa testes de configuração/HTTP, fluxos de navegador em desktop e celular e integração com Watchtower/Docker reais antes de publicar **ghcr.io/sal0-apps/sal0-tower:latest** para amd64 e arm64.
 
 O painel usa Python 3.11+ e PyYAML para ler os metadados dos aplicativos; não incorpora nem substitui o binário do Watchtower.

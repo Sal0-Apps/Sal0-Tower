@@ -1,4 +1,4 @@
-name: Test and publish Sal0 Tower
+name: Release Sal0 Tower
 on:
   push:
     branches: [main]
@@ -7,11 +7,11 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: sal0-tower-${{ github.ref }}
+  group: sal0-tower-release-v2-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -39,14 +39,19 @@ jobs:
   publish:
     needs: test
     if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
+      actions: write
     outputs:
       digest: ${{ steps.build.outputs.digest }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Recover legacy publication queue and check current source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/ci_release.py
       - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
       - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4
@@ -64,11 +69,21 @@ jobs:
             ghcr.io/sal0-apps/sal0-tower:latest
             ghcr.io/sal0-apps/sal0-tower:1.1.0
             ghcr.io/sal0-apps/sal0-tower:sha-${{ github.sha }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=1.1.0
           cache-from: type=gha
           cache-to: type=gha,mode=max
   verify-public-image:
     needs: publish
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - name: Verify image can be downloaded without credentials
-        run: docker manifest inspect ghcr.io/sal0-apps/sal0-tower:latest
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Verify public latest image and published revision
+        env:
+          EXPECTED_DIGEST: ${{ needs.publish.outputs.digest }}
+          EXPECTED_REVISION: ${{ github.sha }}
+        run: |
+          docker manifest inspect ghcr.io/sal0-apps/sal0-tower:latest
+          docker pull ghcr.io/sal0-apps/sal0-tower:latest
+          python3 scripts/verify_image.py
