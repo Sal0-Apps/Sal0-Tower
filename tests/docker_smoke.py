@@ -19,6 +19,8 @@ try:
  with tempfile.TemporaryDirectory() as temp:
   api_version=docker("version","--format","{{.Server.APIVersion}}")
   sentinel=Path(temp)/"sentinel";sentinel.write_text("preserve-this-bind")
+  metadata=Path(temp)/"zima-apps"/"watchtower";metadata.mkdir(parents=True)
+  (metadata/"docker-compose.yml").write_text('services:\n  engine:\n    container_name: '+WATCH+'\nx-casaos:\n  main: engine\n  title:\n    custom: Atualizador Victor\n  icon: https://example.org/watchtower.png\n')
   docker("run","-d","--name",WATCH,"--restart","unless-stopped","-e","DOCKER_API_VERSION="+api_version,
          "-e","WATCHTOWER_POLL_INTERVAL=3600","-e","WATCHTOWER_MONITOR_ONLY=true",
          "-e","WATCHTOWER_SCOPE=sal0-tower-ci-unique","-e","WATCHTOWER_NOTIFICATION_URL=logger://",
@@ -27,7 +29,7 @@ try:
   original=inspect(WATCH)
   sock=socket.socket();sock.bind(("127.0.0.1",0));port=sock.getsockname()[1];sock.close()
   docker("run","-d","--name",PANEL,"--network","host","-e",f"SAL0_PORT={port}","-e","SAL0_HOST_NETWORK=true",
-         "-e","WATCHTOWER_CONTAINER="+WATCH,"-v",temp+"/panel:/data","-v","/var/run/docker.sock:/var/run/docker.sock:ro","sal0-tower:ci")
+         "-e","WATCHTOWER_CONTAINER="+WATCH,"-v",temp+"/panel:/data","-v",temp+"/zima-apps:/zima-apps:ro","-v","/var/run/docker.sock:/var/run/docker.sock:ro","sal0-tower:ci")
   base=f"http://127.0.0.1:{port}"
   def request(path="/api/state",body=None):
    req=Request(base+path,data=json.dumps(body).encode() if body is not None else None,headers={"Content-Type":"application/json","X-Sal0-Request":"1"})
@@ -46,6 +48,8 @@ try:
     time.sleep(.25)
    raise AssertionError("Operation timed out")
   state=ready();assert state["status"]=="running",state
+  assert state["catalog"]["available"]
+  assert any(a["title"]=="Atualizador Victor" for a in state["apps"]),state["apps"]
   assert "private-fixture-value" not in json.dumps(state)
   assert not state["settings"]["http_api_update"]
   request("/api/settings",{"revision":state["revision"],"settings":{"http_api_update":True}})
@@ -64,7 +68,7 @@ try:
   before=inspect(WATCH)["State"]["StartedAt"]
   docker("stop",PANEL);assert inspect(WATCH)["State"]["Running"]
   docker("start",PANEL);ready();assert inspect(WATCH)["State"]["StartedAt"]==before
-  print("Docker OK: native API activation, periodic polls, preserved credentials/mounts, native update, settings restore and panel independence.")
+  print("Docker OK: Zima metadata mount, native API activation, periodic polls, preserved credentials/mounts, native update, settings restore and panel independence.")
 finally:
  for name in (PANEL,WATCH):subprocess.run(["docker","rm","-f",name],capture_output=True)
  # Remove only stopped, disposable Watchtower rollback fixtures after a failed test.

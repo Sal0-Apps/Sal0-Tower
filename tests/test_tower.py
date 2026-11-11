@@ -107,6 +107,15 @@ class HTTPTests(unittest.TestCase):
     def test_status_and_shutdown_never_control_watchtower(self):
         current=self.request()[1];self.assertEqual(current["status"],"running");self.assertEqual(self.docker.calls,[])
         self.assertNotIn("api-secret",json.dumps(current));self.assertNotIn("private-token",json.dumps(current))
+    def test_public_inventory_includes_zima_names_without_compose_secrets(self):
+        from test_apps import browser_catalog,BrowserDocker
+        self.server.tower.catalog=browser_catalog(Path(self.temp.name)/"apps")
+        self.docker.containers=BrowserDocker().containers
+        status,current=self.request()
+        self.assertEqual(status,200)
+        self.assertEqual([a["title"] for a in current["apps"]],["Cinema Victor","Immich da Casa"])
+        self.assertEqual(len(current["apps"][1]["containers"]),3)
+        self.assertNotIn("must-never-reach-browser",json.dumps(current))
     def test_api_activation_and_manual_native_update(self):
         s=self.request()[1]
         self.assertEqual(self.request("/api/update",{"images":[]})[0],400)

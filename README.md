@@ -12,9 +12,19 @@ Abra **http://IP-DO-SERVIDOR:7890**. O nome padrão do container existente é `w
 
 O painel usa a rede host para alcançar a API do Watchtower, inclusive quando ele está em outra rede Docker. Por isso a porta do painel é definida por `SAL0_PORT`, sem seção `ports`. Configurações de sessão e backups ficam em `/DATA/AppData/sal0-tower/data`.
 
+### Nomes, ícones e stacks do ZimaOS
+
+O compose atualizado monta `/var/lib/casaos/apps:/zima-apps:ro`. Essa pasta é consultada somente para ler o nome personalizado, o ícone, o serviço principal e a composição dos aplicativos. O painel não altera esses arquivos nem envia variáveis, senhas ou conteúdo dos composes ao navegador. A leitura se atualiza automaticamente, com cache de até 15 segundos.
+
+Os cartões mostram os nomes do ZimaOS, priorizando `x-casaos.title.custom`, e os ícones configurados no aplicativo ou nas etiquetas `name`/`icon` dos containers. Sem um ícone disponível, o cartão mostra as iniciais do nome. Stacks ficam recolhidas por padrão; ao expandir, aparecem os serviços e seus controles individuais. A abertura dos grupos é lembrada neste navegador.
+
+A busca encontra aplicativos, nomes de containers, serviços e imagens; ao encontrar um serviço, mostra sua stack aberta. É possível filtrar grupos com monitoramento, exclusões ou containers parados. A caixa de exclusão de uma stack indica seleção parcial e permite alterar todos os membros; as alterações só são aplicadas após confirmação. Os bloqueios nativos por etiquetas e escopo continuam valendo.
+
+Quem já usava a versão 1.0 precisa adicionar essa montagem ao compose do **Sal0 Tower** e recriar o painel. Atualizar apenas a imagem não adiciona volumes. Sem a montagem, o painel continua funcionando com as etiquetas e os projetos Docker disponíveis, mas pode não obter os nomes personalizados do ZimaOS.
+
 ## Uso
 
-- **Containers:** estado, imagem e motivo de inclusão/exclusão de cada container; busca, exclusões em lote e verificação por imagem.
+- **Aplicativos:** nome personalizado e ícone do ZimaOS; stacks agrupadas em cartões expansíveis, com estado geral, serviços individuais, filtros, exclusões em lote e verificação por aplicativo ou imagem.
 - **Atividade:** registros do próprio Watchtower, filtro de falhas, pausa/retomada/reinício e acompanhamento da operação com tempo em horas, minutos e segundos.
 - **Ajustes:** intervalo ou cron, limpeza de imagens, somente monitoramento, reinício sequencial, filtros por etiqueta e inclusão de containers parados/reiniciando.
 
@@ -59,9 +69,10 @@ Credenciais de Telegram e outros destinos permanecem na configuração existente
 
 GitHub Actions executa testes de configuração/HTTP, fluxos de navegador em desktop e celular e integração com Watchtower/Docker reais antes de publicar **ghcr.io/sal0-apps/sal0-tower:latest** para amd64 e arm64.
 
-O painel usa somente a biblioteca padrão do Python 3.11+; não incorpora nem substitui o binário do Watchtower.
+O painel usa Python 3.11+ e PyYAML para ler os metadados dos aplicativos; não incorpora nem substitui o binário do Watchtower.
 
 ```bash
+python3 -m pip install -r requirements.txt
 python3 -m unittest discover -s tests -v
 docker build -t sal0-tower:local .
 ```

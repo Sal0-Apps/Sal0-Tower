@@ -17,6 +17,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, build_opener, ProxyHandler
 
 from docker_api import Docker, Error
+from apps import AppCatalog
 
 ROOT = Path(__file__).resolve().parent
 SPEC = json.loads((ROOT / "flag_spec.json").read_text())
@@ -213,9 +214,10 @@ def build_config(before, patch):
 
 
 class Tower:
-    def __init__(self, directory, docker=None, http=None):
+    def __init__(self, directory, docker=None, http=None, catalog=None):
         self.directory=Path(directory);self.directory.mkdir(parents=True,exist_ok=True);self.directory.chmod(0o700)
         self.docker=docker or Docker();self.http=http or self.http_update
+        self.catalog=catalog or AppCatalog()
         self.name=os.getenv("WATCHTOWER_CONTAINER","watchtower");self.lock=threading.Lock();self.events=deque(maxlen=150)
         self.job={"state":"idle"};self.job_file=self.directory/"last-job.json"
         if self.job_file.exists():
@@ -234,13 +236,15 @@ class Tower:
         # Completion is visible only after persistence and lock release, so the
         # next action can start immediately when the UI reports it as finished.
         if self.lock.locked():job["state"]="running"
-        result=dict(version="1.0.0",name=self.name,status="unavailable",settings={},containers=[],logs=list(self.events),job=job,error=None)
+        result=dict(version="1.1.0",name=self.name,status="unavailable",settings={},containers=[],apps=[],catalog={"available":False,"apps":0},logs=list(self.events),job=job,error=None)
         try:
             info=self.inspect();settings=public_settings(info)
             result.update(status="running" if info["State"].get("Running") else "paused",settings=settings,revision=revision(info),image=info["Config"]["Image"])
-            for c in self.docker.containers():
+            raw=self.docker.containers()
+            for c in raw:
                 allowed,reason=eligible(c,info)
                 result["containers"].append(dict(id=c["Id"],name=(c.get("Names")or["?"])[0].lstrip("/"),image=c.get("Image",""),state=c.get("State",""),eligible=allowed,reason=reason,excluded=(c.get("Names")or[""])[0].lstrip("/") in settings["disabled"]))
+            result["apps"],result["catalog"]=self.catalog.decorate(raw,result["containers"])
             for line in self.docker.logs(info["Id"]):
                 stamp,_,msg=line.partition(" ")
                 try:when=datetime.fromisoformat(stamp.replace("Z","+00:00")).timestamp()

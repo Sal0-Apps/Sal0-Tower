@@ -18,10 +18,12 @@ services:
       SAL0_PORT: "7890"
       SAL0_HOST_NETWORK: "true"
       SAL0_DATA: /data
+      SAL0_ZIMA_APPS: /zima-apps
       WATCHTOWER_CONTAINER: watchtower
     volumes:
       - /DATA/AppData/sal0-tower/data:/data
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/casaos/apps:/zima-apps:ro
     labels:
       com.centurylinklabs.watchtower.enable: "true"
       icon: https://raw.githubusercontent.com/Sal0-Apps/Sal0-Tower/main/assets/icon-512.png
@@ -50,5 +52,5 @@ x-casaos:
   description:
     pt_br: Interface para o Watchtower existente, com containers, filtros, atualização manual, agendamento e registros. Preserva as notificações e mantém o motor independente.
     en_us: Web panel for an existing Watchtower with filters, scheduling, manual updates and logs.
-  version: "1.0.0"
+  version: "1.1.0"
   store_app_id: sal0-tower

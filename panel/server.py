@@ -19,14 +19,14 @@ class Handler(BaseHTTPRequestHandler):
     def send(self,status,value,mime="application/json; charset=utf-8"):
         data=json.dumps(value,ensure_ascii=False).encode() if mime.startswith("application/json") else value
         self.send_response(status)
-        for key,val in {"Content-Type":mime,"Content-Length":str(len(data)),"Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"}.items():self.send_header(key,val)
+        for key,val in {"Content-Type":mime,"Content-Length":str(len(data)),"Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https: http:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"}.items():self.send_header(key,val)
         self.end_headers()
         try:self.wfile.write(data)
         except (BrokenPipeError,ConnectionResetError):pass
 
     def do_GET(self):
         path=urlsplit(self.path).path
-        if path=="/healthz":return self.send(200,{"ok":True,"version":"1.0.0"})
+        if path=="/healthz":return self.send(200,{"ok":True,"version":"1.1.0"})
         if path=="/api/state":return self.send(200,self.server.tower.state())
         files={"/":("index.html","text/html; charset=utf-8"),"/app.js":("app.js","application/javascript; charset=utf-8"),"/style.css":("style.css","text/css; charset=utf-8"),"/icon.svg":("icon.svg","image/svg+xml")}
         if path not in files:return self.send(404,{"error":"Página não encontrada."})
@@ -48,9 +48,9 @@ class Handler(BaseHTTPRequestHandler):
         except Exception:self.send(500,{"error":"Não foi possível concluir. Confira os registros e tente novamente."})
 
 
-def make_server(host="0.0.0.0",port=7860,directory="/data",docker=None,http=None):
+def make_server(host="0.0.0.0",port=7860,directory="/data",docker=None,http=None,catalog=None):
     server=ThreadingHTTPServer((host,port),Handler);server.daemon_threads=True
-    server.tower=Tower(directory,docker,http)
+    server.tower=Tower(directory,docker,http,catalog)
     return server
 
 
