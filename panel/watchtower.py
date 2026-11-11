@@ -230,7 +230,11 @@ class Tower:
         self.events.append(dict(time=time.time(),message=message,source="painel"))
 
     def state(self):
-        result=dict(version="1.0.0",name=self.name,status="unavailable",settings={},containers=[],logs=list(self.events),job=copy.deepcopy(self.job),error=None)
+        job=copy.deepcopy(self.job)
+        # Completion is visible only after persistence and lock release, so the
+        # next action can start immediately when the UI reports it as finished.
+        if self.lock.locked():job["state"]="running"
+        result=dict(version="1.0.0",name=self.name,status="unavailable",settings={},containers=[],logs=list(self.events),job=job,error=None)
         try:
             info=self.inspect();settings=public_settings(info)
             result.update(status="running" if info["State"].get("Running") else "paused",settings=settings,revision=revision(info),image=info["Config"]["Image"])
@@ -249,14 +253,21 @@ class Tower:
     def submit(self, kind, operation):
         if not self.lock.acquire(blocking=False):raise Error("Já existe uma operação em andamento. Aguarde a conclusão.",409)
         self.job=dict(state="running",kind=kind,started=time.time(),message="Operação em andamento; acompanhe os registros.")
-        atomic(self.job_file,self.job)
+        try:atomic(self.job_file,self.job)
+        except OSError as exc:
+            self.job.update(state="error",finished=time.time(),message="Não foi possível iniciar a operação: a pasta de dados não está disponível.")
+            self.lock.release()
+            raise Error("Não foi possível gravar os dados do painel. Confira a pasta de dados antes de tentar novamente.") from exc
         def run():
             try:
                 operation();self.job.update(state="done",finished=time.time(),message="Solicitação concluída. Confira o resultado nos registros do Watchtower.")
             except Exception as exc:
                 message=str(exc) if isinstance(exc,Error) else "Não foi possível concluir a operação. Verifique o Watchtower antes de tentar novamente."
                 self.job.update(state="error",finished=time.time(),message=message);self.log(message)
-            finally:atomic(self.job_file,self.job);self.lock.release()
+            finally:
+                try:atomic(self.job_file,self.job)
+                except OSError:self.log("A operação terminou, mas não foi possível salvar o histórico na pasta de dados.")
+                finally:self.lock.release()
         threading.Thread(target=run,daemon=True).start()
         return self.state()
 
