@@ -26,9 +26,9 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path=urlsplit(self.path).path
-        if path=="/healthz":return self.send(200,{"ok":True,"version":"1.1.0"})
+        if path=="/healthz":return self.send(200,{"ok":True,"version":"1.2.0"})
         if path=="/api/state":return self.send(200,self.server.tower.state())
-        files={"/":("index.html","text/html; charset=utf-8"),"/app.js":("app.js","application/javascript; charset=utf-8"),"/style.css":("style.css","text/css; charset=utf-8"),"/icon.svg":("icon.svg","image/svg+xml")}
+        files={"/appearance.css":("appearance.css","text/css; charset=utf-8"),"/appearance.js":("appearance.js","application/javascript; charset=utf-8"),"/":("index.html","text/html; charset=utf-8"),"/app.js":("app.js","application/javascript; charset=utf-8"),"/style.css":("style.css","text/css; charset=utf-8"),"/icon.svg":("icon.svg","image/svg+xml")}
         if path not in files:return self.send(404,{"error":"Página não encontrada."})
         name,mime=files[path];self.send(200,(STATIC/name).read_bytes(),mime)
 

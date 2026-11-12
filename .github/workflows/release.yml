@@ -32,6 +32,7 @@ jobs:
             .ci-venv/bin/python -m playwright install --with-deps chromium
           fi
           timeout 180 .ci-venv/bin/python -u tests/browser_smoke.py
+          .ci-venv/bin/python tests/appearance_smoke.py
       - name: Build panel for Docker integration
         run: docker build -t sal0-tower:ci .
       - name: Test with independent Docker engine
@@ -67,11 +68,11 @@ jobs:
           push: true
           tags: |
             ghcr.io/sal0-apps/sal0-tower:latest
-            ghcr.io/sal0-apps/sal0-tower:1.1.0
+            ghcr.io/sal0-apps/sal0-tower:1.2.0
             ghcr.io/sal0-apps/sal0-tower:sha-${{ github.sha }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.version=1.1.0
+            org.opencontainers.image.version=1.2.0
           cache-from: type=gha
           cache-to: type=gha,mode=max
   verify-public-image:

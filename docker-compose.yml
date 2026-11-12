@@ -52,5 +52,5 @@ x-casaos:
   description:
     pt_br: Interface para o Watchtower existente, com containers, filtros, atualização manual, agendamento e registros. Preserva as notificações e mantém o motor independente.
     en_us: Web panel for an existing Watchtower with filters, scheduling, manual updates and logs.
-  version: "1.1.0"
+  version: "1.2.0"
   store_app_id: sal0-tower
