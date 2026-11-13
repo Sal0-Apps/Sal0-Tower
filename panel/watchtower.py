@@ -236,7 +236,7 @@ class Tower:
         # Completion is visible only after persistence and lock release, so the
         # next action can start immediately when the UI reports it as finished.
         if self.lock.locked():job["state"]="running"
-        result=dict(version="1.2.0",name=self.name,status="unavailable",settings={},containers=[],apps=[],catalog={"available":False,"apps":0},logs=list(self.events),job=job,error=None)
+        result=dict(version="1.2.1",name=self.name,status="unavailable",settings={},containers=[],apps=[],catalog={"available":False,"apps":0},logs=list(self.events),job=job,error=None)
         try:
             info=self.inspect();settings=public_settings(info)
             result.update(status="running" if info["State"].get("Running") else "paused",settings=settings,revision=revision(info),image=info["Config"]["Image"])

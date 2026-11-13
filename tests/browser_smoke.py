@@ -81,7 +81,7 @@ try:
    page.locator("#tab-containers").click();page.locator("#update-all").click()
    assert page.locator("#confirm-dialog").evaluate("e=>e.getBoundingClientRect().right<=innerWidth")
    page.locator("#cancel-dialog").click()
-  page.locator("#theme").click();expect(page.locator("body")).to_have_class("light")
+  page.locator("#theme").click();page.locator("[data-sal0-mode-choice=light]").click();page.locator("[data-sal0-close]").click();expect(page.locator("body")).to_have_class("light")
   page.reload();expect(page.locator("body")).to_have_class("light")
   assert immich.locator("details").evaluate("e=>e.open")
   assert not errors,errors
