@@ -68,11 +68,11 @@ jobs:
           push: true
           tags: |
             ghcr.io/sal0-apps/sal0-tower:latest
-            ghcr.io/sal0-apps/sal0-tower:1.2.1
+            ghcr.io/sal0-apps/sal0-tower:1.2.2
             ghcr.io/sal0-apps/sal0-tower:sha-${{ github.sha }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.version=1.2.1
+            org.opencontainers.image.version=1.2.2
           cache-from: type=gha
           cache-to: type=gha,mode=max
   verify-public-image:
